@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nivesh — First-Timer's Guide to Investing</title>
+<link rel="icon" type="image/png" href="assets/icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --surface: #111916;
+    --surface2: #182118;
+    --surface3: #1e2a1e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --green: #3fffa2;
+    --green-dim: rgba(63,255,162,0.10);
+    --green-mid: rgba(63,255,162,0.25);
+    --text: #f0f4f1;
+    --muted: #7a9080;
+    --muted2: #9ab0a0;
+    --danger: #ff6b6b;
+    --warning: #ffb84d;
+    --gold: #f5c842;
+    --blue: #5eb8ff;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Grid bg */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(63,255,162,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ─── Top nav ──────────────────────────────────────────────── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,15,13,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .brand-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .nav-badge {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--green); background: var(--green-dim);
+    border: 1px solid var(--green-mid);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .nav-back {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--green); }
+
+  /* ─── Progress bar ─────────────────────────────────────────── */
+  .progress-bar {
+    position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+    height: 2px; background: var(--border);
+  }
+  .progress-fill {
+    height: 100%; background: var(--green);
+    width: 0%; transition: width 0.1s linear;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  /* ─── Layout ───────────────────────────────────────────────── */
+  .layout {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* ─── Sidebar ──────────────────────────────────────────────── */
+  .sidebar {
+    position: sticky; top: 90px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sidebar-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px; padding-left: 12px;
+  }
+  .sidebar-link {
+    font-size: 13px; color: var(--muted2); text-decoration: none;
+    padding: 7px 12px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .sidebar-link:hover { color: var(--text); background: var(--green-dim); }
+  .sidebar-link.active { color: var(--green); background: var(--green-dim); border-left-color: var(--green); }
+  .sidebar-link .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  /* ─── Main content ─────────────────────────────────────────── */
+  .content { min-width: 0; }
+
+  /* Hero */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(63,255,162,0.09) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--green); background: var(--green-dim);
+    border: 1px solid var(--green-mid);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.2; letter-spacing: -0.5px;
+    margin-bottom: 1rem; color: var(--text);
+  }
+  .hero h1 em { font-style: italic; color: var(--green); }
+  .hero p { font-size: 15px; color: var(--muted2); max-width: 520px; line-height: 1.75; }
+  .hero-stats {
+    display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;
+  }
+  .hero-stat { display: flex; flex-direction: column; gap: 3px; }
+  .hero-stat-num { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--green); }
+  .hero-stat-label { font-size: 12px; color: var(--muted); }
+
+  /* Section */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .section-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--green-dim); border: 1px solid var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--green); flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; letter-spacing: -0.3px; color: var(--text);
+  }
+  .section-divider {
+    height: 1px; background: var(--border);
+    margin-bottom: 1.5rem;
+  }
+  p { font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+  strong { color: var(--text); font-weight: 600; }
+
+  /* Callout box */
+  .callout {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .callout-body { font-size: 14px; color: var(--muted2); line-height: 1.7; }
+  .callout-body strong { color: var(--text); }
+  .callout.green { border-color: var(--green-mid); background: var(--green-dim); }
+  .callout.green .callout-body { color: #b0e8c8; }
+  .callout.warning { border-color: rgba(255,184,77,0.3); background: rgba(255,184,77,0.07); }
+  .callout.warning .callout-body { color: #e0c07a; }
+
+  /* Term cards */
+  .term-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+  .term-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .term-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .term-card-icon { font-size: 22px; margin-bottom: 10px; }
+  .term-card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .term-card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ─── Portfolio cards ──────────────────────────────────────── */
+  .portfolio-cards { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+
+  .pcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .pcard:hover { transform: translateY(-3px); }
+  .pcard::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .pcard.safe::before  { background: linear-gradient(90deg, #5eb8ff, #3fffa2); }
+  .pcard.balanced::before { background: linear-gradient(90deg, #3fffa2, #f5c842); }
+  .pcard.growth::before { background: linear-gradient(90deg, #f5c842, #ff9f43); }
+  .pcard.nifty::before { background: linear-gradient(90deg, #ff9f43, #ff6b9d); }
+  .pcard.smallcap::before { background: linear-gradient(90deg, #ff6b9d, #c056de); }
+
+  .pcard.safe:hover  { border-color: #5eb8ff44; }
+  .pcard.balanced:hover { border-color: #3fffa244; }
+  .pcard.growth:hover { border-color: #f5c84244; }
+  .pcard.nifty:hover { border-color: #ff9f4344; }
+  .pcard.smallcap:hover { border-color: #c056de44; }
+
+  .pcard-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+  .pcard-title-row { display: flex; align-items: center; gap: 12px; }
+  .pcard-emoji { font-size: 28px; }
+  .pcard-name { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--text); }
+  .pcard-tagline { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .pcard-risk {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px; flex-shrink: 0;
+  }
+  .risk-very-low  { background: rgba(94,184,255,0.12); color: #5eb8ff; border: 1px solid rgba(94,184,255,0.3); }
+  .risk-low       { background: rgba(63,255,162,0.10); color: var(--green); border: 1px solid var(--green-mid); }
+  .risk-medium    { background: rgba(245,200,66,0.10); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+  .risk-high      { background: rgba(255,159,67,0.10); color: #ff9f43; border: 1px solid rgba(255,159,67,0.3); }
+  .risk-very-high { background: rgba(192,86,222,0.10); color: #c056de; border: 1px solid rgba(192,86,222,0.3); }
+
+  .pcard-desc { font-size: 14px; color: var(--muted2); line-height: 1.7; margin-bottom: 1.25rem; }
+
+  .pcard-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    background: var(--surface2); border-radius: 10px; padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .pstat { display: flex; flex-direction: column; gap: 4px; }
+  .pstat-label { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+  .pstat-value { font-size: 16px; font-weight: 600; color: var(--text); }
+  .pstat-value.green { color: var(--green); }
+  .pstat-value.blue { color: var(--blue); }
+  .pstat-value.gold { color: var(--gold); }
+  .pstat-value.orange { color: #ff9f43; }
+  .pstat-value.purple { color: #c056de; }
+
+  /* Allocation bar */
+  .alloc-row { display: flex; align-items: center; gap: 10px; }
+  .alloc-label { font-size: 12px; color: var(--muted); width: 90px; flex-shrink: 0; }
+  .alloc-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .alloc-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+  .alloc-fill.equity { background: var(--green); }
+  .alloc-fill.debt { background: var(--blue); }
+  .alloc-pct { font-size: 12px; font-weight: 600; color: var(--text); width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* Who it's for tag */
+  .who-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+  .who-tag {
+    font-size: 12px; color: var(--muted2);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ─── Risk ruler ───────────────────────────────────────────── */
+  .risk-ruler {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; margin: 1.5rem 0;
+  }
+  .risk-ruler-title { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 1.25rem; }
+  .risk-track-wrap { position: relative; }
+  .risk-gradient-track {
+    height: 10px; border-radius: 5px;
+    background: linear-gradient(90deg, #5eb8ff, #3fffa2, #f5c842, #ff9f43, #c056de);
+    margin-bottom: 2rem;
+  }
+  .risk-dots { display: flex; justify-content: space-between; margin-top: -28px; }
+  .risk-dot-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .risk-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg); }
+  .risk-dot.safe { background: #5eb8ff; }
+  .risk-dot.balanced { background: #3fffa2; }
+  .risk-dot.growth { background: #f5c842; }
+  .risk-dot.nifty { background: #ff9f43; }
+  .risk-dot.smallcap { background: #c056de; }
+  .risk-dot-label { font-size: 11px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  /* ─── Timeline ─────────────────────────────────────────────── */
+  .steps { display: flex; flex-direction: column; gap: 0; margin: 1.5rem 0; }
+  .step { display: flex; gap: 1.5rem; padding-bottom: 2rem; position: relative; }
+  .step:last-child { padding-bottom: 0; }
+  .step-left { display: flex; flex-direction: column; align-items: center; }
+  .step-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--green-dim); border: 1px solid var(--green-mid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0; z-index: 1;
+  }
+  .step-line {
+    width: 1px; flex: 1; background: var(--border); margin-top: 8px;
+  }
+  .step:last-child .step-line { display: none; }
+  .step-body { padding-top: 8px; }
+  .step-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* ─── Comparison table ─────────────────────────────────────── */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 14px; }
+  .compare-table th {
+    text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--muted); padding: 10px 14px;
+    border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .compare-table th:first-child { border-radius: 8px 0 0 0; }
+  .compare-table th:last-child { border-radius: 0 8px 0 0; }
+  .compare-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--muted2); vertical-align: top; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: var(--green-dim); }
+  .compare-table td:first-child { font-weight: 600; color: var(--text); }
+  .tag-pill {
+    display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  /* ─── FAQ ──────────────────────────────────────────────────── */
+  .faq-list { display: flex; flex-direction: column; gap: 1px; }
+  .faq-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .faq-q {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 1.25rem; cursor: pointer;
+    font-size: 14px; font-weight: 500; color: var(--text);
+    transition: background 0.15s;
+  }
+  .faq-q:hover { background: var(--surface2); }
+  .faq-arrow { color: var(--muted); transition: transform 0.25s; font-size: 12px; }
+  .faq-a {
+    font-size: 14px; color: var(--muted2); line-height: 1.75;
+    padding: 0 1.25rem; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  .faq-item.open .faq-a { max-height: 300px; padding: 0 1.25rem 1.1rem; }
+
+  /* ─── CTA ──────────────────────────────────────────────────── */
+  .cta-box {
+    background: var(--surface); border: 1px solid var(--green-mid);
+    border-radius: 20px; padding: 2.5rem;
+    text-align: center; margin-top: 3rem; position: relative; overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(63,255,162,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-box h2 {
+    font-family: 'DM Serif Display', serif; font-size: 1.7rem;
+    color: var(--text); margin-bottom: 0.75rem;
+  }
+  .cta-box p { font-size: 15px; color: var(--muted); max-width: 400px; margin: 0 auto 1.5rem; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green); color: #0a0f0d;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    padding: 13px 28px; border-radius: 10px; border: none; cursor: pointer;
+    text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+  }
+  .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ─── Responsive ───────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; gap: 2rem; }
+    .sidebar { display: none; }
+    .term-grid { grid-template-columns: 1fr; }
+    .pcard-stats { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 2rem; }
+    .risk-dots { display: none; }
+  }
+
+  /* ─── Scroll reveal ────────────────────────────────────────── */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <img src="assets/icon.png" alt="Nivesh" style="width:30px;height:30px;border-radius:8px;object-fit:cover;" />
+    <span class="brand-name">Nivesh</span>
+  </a>
+  <span class="nav-badge">📖 First-Timer's Guide</span>
+  <a href="app.html" class="nav-back">← Back to Simulator</a>
+</nav>
+
+<!-- Progress bar -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-label">On this page</div>
+    <a href="#what-is-investing" class="sidebar-link" data-target="what-is-investing"><span class="dot"></span> What is Investing?</a>
+    <a href="#key-terms" class="sidebar-link" data-target="key-terms"><span class="dot"></span> Key Terms</a>
+    <a href="#portfolios" class="sidebar-link" data-target="portfolios"><span class="dot"></span> The 5 Portfolios</a>
+    <a href="#risk-spectrum" class="sidebar-link" data-target="risk-spectrum"><span class="dot"></span> Risk Spectrum</a>
+    <a href="#comparison" class="sidebar-link" data-target="comparison"><span class="dot"></span> Side-by-Side</a>
+    <a href="#how-to-start" class="sidebar-link" data-target="how-to-start"><span class="dot"></span> How to Start</a>
+    <a href="#faq" class="sidebar-link" data-target="faq"><span class="dot"></span> FAQ</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="content">
+
+    <!-- Hero -->
+    <div class="hero reveal">
+      <div class="hero-tag">✦ Beginner's Handbook</div>
+      <h1>Investing made <em>simple</em><br/>for first-timers</h1>
+      <p>Never invested before? No jargon, no maths degree needed. This guide explains everything — from what a portfolio even is, to which one fits you best.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-num">5</span><span class="hero-stat-label">Portfolio types explained</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">7</span><span class="hero-stat-label">Key concepts covered</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">~8 min</span><span class="hero-stat-label">Read time</span></div>
+      </div>
+    </div>
+
+    <!-- ── Section 1: What is investing ── -->
+    <section class="section reveal" id="what-is-investing">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <h2 class="section-title">What is Investing?</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <p>Imagine you have ₹10,000 sitting in your bank account. It just sits there. In a year, inflation quietly eats about 5–6% of its buying power. That cup of chai that cost ₹10 last year now costs ₹10.60. Your money did nothing — and it got poorer.</p>
+
+      <p><strong>Investing is putting your money to work</strong> so it grows faster than inflation. Instead of your money sitting idle, you lend it to companies (stocks) or the government (bonds), and they pay you back with interest or profits.</p>
+
+      <div class="callout green">
+        <div class="callout-icon">🏏</div>
+        <div class="callout-body"><strong>Cricket analogy:</strong> Saving is like a defensive batsman who doesn't get out but also scores zero. Investing is like playing aggressive shots — some will get you boundaries, some might get you out, but over a full innings you'll score more runs.</div>
+      </div>
+
+      <p>The magic of investing is <strong>compounding</strong> — your returns earn returns. ₹10,000 growing at 13%/year becomes ₹13,000 → ₹14,690 → ₹16,600 → ₹34,500 in 10 years. You added zero extra rupees, yet almost tripled your money.</p>
+
+      <div class="callout warning">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>Real talk:</strong> Investing always carries some risk. You could lose money, especially short-term. The simulator on Nivesh helps you understand exactly how much risk you're taking before you put real money in.</div>
+      </div>
+    </section>
+
+    <!-- ── Section 2: Key Terms ── -->
+    <section class="section reveal" id="key-terms">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <h2 class="section-title">Key Terms (Plain English)</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <p>Before we talk portfolios, let's decode the words you'll keep seeing.</p>
+
+      <div class="term-grid">
+        <div class="term-card">
+          <div class="term-card-icon">🗂️</div>
+          <div class="term-card-title">Portfolio</div>
+          <div class="term-card-desc">Your total collection of investments — like a thali with different dishes. Each dish is a different type of asset (stocks, bonds, etc.).</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">📈</div>
+          <div class="term-card-title">Equity (Stocks)</div>
+          <div class="term-card-desc">Buying a tiny ownership stake in a company. If the company grows, your stake grows. High potential returns, but prices move up and down daily.</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">🏦</div>
+          <div class="term-card-title">Debt (Bonds / FD)</div>
+          <div class="term-card-desc">Lending money to the government or companies at a fixed interest rate. Like an FD — safer and predictable, but lower returns (~6–7%).</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">⚡</div>
+          <div class="term-card-title">Volatility</div>
+          <div class="term-card-desc">How wildly a price swings. High volatility = big ups and downs. Low volatility = smooth, steady movement. More volatility = more risk AND more opportunity.</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">🎲</div>
+          <div class="term-card-title">Risk</div>
+          <div class="term-card-desc">The chance your investment loses value. Every investment has some risk — even a savings account loses to inflation. The question is: which risk are you comfortable with?</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">🔢</div>
+          <div class="term-card-title">Asset Allocation</div>
+          <div class="term-card-desc">The split between equity and debt in your portfolio. e.g., 60% equity + 40% debt. More equity = more potential gain + more risk.</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">📊</div>
+          <div class="term-card-title">NIFTY 50</div>
+          <div class="term-card-desc">India's top 50 companies by market size (Reliance, TCS, HDFC, etc.). Investing in Nifty = owning a tiny slice of India's biggest businesses.</div>
+        </div>
+        <div class="term-card">
+          <div class="term-card-icon">🚀</div>
+          <div class="term-card-title">Small Cap</div>
+          <div class="term-card-desc">Smaller, younger companies. Higher growth potential (could 5x in 5 years!) but also higher risk of crashing. Not for the faint-hearted.</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>The golden rule:</strong> Higher potential returns always come with higher risk. There is no free lunch in investing — anyone promising guaranteed high returns is lying.</div>
+      </div>
+    </section>
+
+    <!-- ── Section 3: The 5 Portfolios ── -->
+    <section class="section reveal" id="portfolios">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <h2 class="section-title">The 5 Portfolios Explained</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <p>Nivesh offers five preset portfolios, from ultra-safe to high-octane. Here's exactly what each one means, who it's for, and what to expect.</p>
+
+      <div class="portfolio-cards">
+
+        <!-- Safe Haven -->
+        <div class="pcard safe reveal">
+          <div class="pcard-header">
+            <div class="pcard-title-row">
+              <div class="pcard-emoji">🛡️</div>
+              <div>
+                <div class="pcard-name">Safe Haven</div>
+                <div class="pcard-tagline">Slow and steady wins the race</div>
+              </div>
+            </div>
+            <span class="pcard-risk risk-low">Low Risk</span>
+          </div>
+
+          <p class="pcard-desc">This is the most conservative portfolio. Think of it like a <strong>fixed deposit with a little extra upside</strong>. Most of your money goes into bonds and debt instruments (safe, predictable), with a small 30% in equity for slightly better returns.</p>
+
+          <div class="pcard-stats">
+            <div class="pstat"><div class="pstat-label">Avg. Return</div><div class="pstat-value green">~9% / yr</div></div>
+            <div class="pstat"><div class="pstat-label">Volatility</div><div class="pstat-value blue">Low (±5%)</div></div>
+            <div class="pstat"><div class="pstat-label">Equity</div><div class="pstat-value">30%</div></div>
+            <div class="pstat"><div class="pstat-label">Debt</div><div class="pstat-value">70%</div></div>
+          </div>
+
+          <div class="alloc-row" style="margin-bottom:8px">
+            <div class="alloc-label">📈 Equity</div>
+            <div class="alloc-track"><div class="alloc-fill equity" style="width:30%"></div></div>
+            <div class="alloc-pct">30%</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-label">🏦 Debt / FD</div>
+            <div class="alloc-track"><div class="alloc-fill debt" style="width:70%"></div></div>
+            <div class="alloc-pct">70%</div>
+          </div>
+
+          <div class="who-tags">
+            <span class="who-tag">👶 Absolute beginners</span>
+            <span class="who-tag">😰 Sleep-easy investors</span>
+            <span class="who-tag">⏰ Need money in 1–2 years</span>
+            <span class="who-tag">👴 Near retirement</span>
+          </div>
+        </div>
+
+        <!-- Balanced -->
+        <div class="pcard balanced reveal">
+          <div class="pcard-header">
+            <div class="pcard-title-row">
+              <div class="pcard-emoji">⚖️</div>
+              <div>
+                <div class="pcard-name">Balanced</div>
+                <div class="pcard-tagline">The classic 50-50 thali</div>
+              </div>
+            </div>
+            <span class="pcard-risk risk-medium">Medium Risk</span>
+          </div>
+
+          <p class="pcard-desc">Half equity, half debt. It's like a <strong>masala dosa — the right amount of crisp and soft</strong>. You get meaningful growth from equity while the debt portion cushions you when markets fall. India's most popular beginner portfolio.</p>
+
+          <div class="pcard-stats">
+            <div class="pstat"><div class="pstat-label">Avg. Return</div><div class="pstat-value green">~13% / yr</div></div>
+            <div class="pstat"><div class="pstat-label">Volatility</div><div class="pstat-value gold">Medium (±10%)</div></div>
+            <div class="pstat"><div class="pstat-label">Equity</div><div class="pstat-value">50%</div></div>
+            <div class="pstat"><div class="pstat-label">Debt</div><div class="pstat-value">50%</div></div>
+          </div>
+
+          <div class="alloc-row" style="margin-bottom:8px">
+            <div class="alloc-label">📈 Equity</div>
+            <div class="alloc-track"><div class="alloc-fill equity" style="width:50%"></div></div>
+            <div class="alloc-pct">50%</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-label">🏦 Debt / FD</div>
+            <div class="alloc-track"><div class="alloc-fill debt" style="width:50%"></div></div>
+            <div class="alloc-pct">50%</div>
+          </div>
+
+          <div class="who-tags">
+            <span class="who-tag">🎓 Working professionals</span>
+            <span class="who-tag">📅 3–5 year horizon</span>
+            <span class="who-tag">😌 Moderate risk tolerance</span>
+            <span class="who-tag">🏠 Saving for a goal</span>
+          </div>
+        </div>
+
+        <!-- Growth -->
+        <div class="pcard growth reveal">
+          <div class="pcard-header">
+            <div class="pcard-title-row">
+              <div class="pcard-emoji">🌱</div>
+              <div>
+                <div class="pcard-name">Growth</div>
+                <div class="pcard-tagline">Equity-heavy, long-term bet</div>
+              </div>
+            </div>
+            <span class="pcard-risk risk-high">High Risk</span>
+          </div>
+
+          <p class="pcard-desc">80% equity, 20% debt. You're betting big on India's stock markets growing over the long run. Short-term, your portfolio could drop 20–30% — <strong>that's totally normal and expected</strong>. But hold for 5–10 years and history shows strong gains.</p>
+
+          <div class="pcard-stats">
+            <div class="pstat"><div class="pstat-label">Avg. Return</div><div class="pstat-value green">~17% / yr</div></div>
+            <div class="pstat"><div class="pstat-label">Volatility</div><div class="pstat-value orange">High (±16%)</div></div>
+            <div class="pstat"><div class="pstat-label">Equity</div><div class="pstat-value">80%</div></div>
+            <div class="pstat"><div class="pstat-label">Debt</div><div class="pstat-value">20%</div></div>
+          </div>
+
+          <div class="alloc-row" style="margin-bottom:8px">
+            <div class="alloc-label">📈 Equity</div>
+            <div class="alloc-track"><div class="alloc-fill equity" style="width:80%"></div></div>
+            <div class="alloc-pct">80%</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-label">🏦 Debt / FD</div>
+            <div class="alloc-track"><div class="alloc-fill debt" style="width:20%"></div></div>
+            <div class="alloc-pct">20%</div>
+          </div>
+
+          <div class="who-tags">
+            <span class="who-tag">💪 Risk-comfortable investors</span>
+            <span class="who-tag">⏳ 5+ year horizon</span>
+            <span class="who-tag">🧘 Won't panic-sell in a crash</span>
+          </div>
+        </div>
+
+        <!-- Nifty 50 -->
+        <div class="pcard nifty reveal">
+          <div class="pcard-header">
+            <div class="pcard-title-row">
+              <div class="pcard-emoji">🇮🇳</div>
+              <div>
+                <div class="pcard-name">Nifty 50</div>
+                <div class="pcard-tagline">Bet on India's top 50 companies</div>
+              </div>
+            </div>
+            <span class="pcard-risk risk-high">High Risk</span>
+          </div>
+
+          <p class="pcard-desc">100% in India's top 50 companies — Reliance, TCS, HDFC Bank, Infosys, Airtel and more. No debt buffer. It's like <strong>buying India's entire first-team squad</strong>. When India's economy grows, you win. This is one of the most popular long-term investments globally.</p>
+
+          <div class="pcard-stats">
+            <div class="pstat"><div class="pstat-label">Avg. Return</div><div class="pstat-value green">~15% / yr</div></div>
+            <div class="pstat"><div class="pstat-label">Volatility</div><div class="pstat-value orange">High (±18%)</div></div>
+            <div class="pstat"><div class="pstat-label">Equity</div><div class="pstat-value">100%</div></div>
+            <div class="pstat"><div class="pstat-label">Debt</div><div class="pstat-value">0%</div></div>
+          </div>
+
+          <div class="alloc-row" style="margin-bottom:8px">
+            <div class="alloc-label">📈 Equity</div>
+            <div class="alloc-track"><div class="alloc-fill equity" style="width:100%"></div></div>
+            <div class="alloc-pct">100%</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-label">🏦 Debt / FD</div>
+            <div class="alloc-track"><div class="alloc-fill debt" style="width:0%"></div></div>
+            <div class="alloc-pct">0%</div>
+          </div>
+
+          <div class="who-tags">
+            <span class="who-tag">🌐 Index fund believers</span>
+            <span class="who-tag">📆 7–10 year+ horizon</span>
+            <span class="who-tag">🎯 Want broad market exposure</span>
+          </div>
+        </div>
+
+        <!-- Small Cap -->
+        <div class="pcard smallcap reveal">
+          <div class="pcard-header">
+            <div class="pcard-title-row">
+              <div class="pcard-emoji">🚀</div>
+              <div>
+                <div class="pcard-name">Small Cap</div>
+                <div class="pcard-tagline">Moon or bust — high octane</div>
+              </div>
+            </div>
+            <span class="pcard-risk risk-very-high">Very High Risk</span>
+          </div>
+
+          <p class="pcard-desc">100% in small, fast-growing Indian companies — the underdogs that could be the next big thing. <strong>Imagine betting on a new IPL team before anyone knew them.</strong> These can 5x in good times but also drop 50%+ during crashes. Only for those with serious stomach for risk and a 10-year view.</p>
+
+          <div class="pcard-stats">
+            <div class="pstat"><div class="pstat-label">Avg. Return</div><div class="pstat-value green">~20% / yr</div></div>
+            <div class="pstat"><div class="pstat-label">Volatility</div><div class="pstat-value" style="color:#c056de">Very High (±26%)</div></div>
+            <div class="pstat"><div class="pstat-label">Equity</div><div class="pstat-value">100%</div></div>
+            <div class="pstat"><div class="pstat-label">Debt</div><div class="pstat-value">0%</div></div>
+          </div>
+
+          <div class="alloc-row" style="margin-bottom:8px">
+            <div class="alloc-label">📈 Equity</div>
+            <div class="alloc-track"><div class="alloc-fill equity" style="width:100%"></div></div>
+            <div class="alloc-pct">100%</div>
+          </div>
+          <div class="alloc-row">
+            <div class="alloc-label">🏦 Debt / FD</div>
+            <div class="alloc-track"><div class="alloc-fill debt" style="width:0%"></div></div>
+            <div class="alloc-pct">0%</div>
+          </div>
+
+          <div class="callout warning" style="margin-top:1rem;margin-bottom:0">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-body"><strong>Not for beginners.</strong> If you're just starting out, please start with Safe Haven or Balanced. You can always move up the risk ladder as you get comfortable.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Section 4: Risk Spectrum ── -->
+    <section class="section reveal" id="risk-spectrum">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <h2 class="section-title">The Risk Spectrum</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <p>All five portfolios live on a spectrum from "barely any risk" to "quite a lot of risk". More risk usually means more potential reward — and more potential loss.</p>
+
+      <div class="risk-ruler">
+        <div class="risk-ruler-title">Risk level →</div>
+        <div class="risk-gradient-track"></div>
+        <div class="risk-dots">
+          <div class="risk-dot-col">
+            <div class="risk-dot safe"></div>
+            <div class="risk-dot-label">🛡️ Safe<br/>Haven</div>
+          </div>
+          <div class="risk-dot-col">
+            <div class="risk-dot balanced"></div>
+            <div class="risk-dot-label">⚖️ Balanced</div>
+          </div>
+          <div class="risk-dot-col">
+            <div class="risk-dot growth"></div>
+            <div class="risk-dot-label">🌱 Growth</div>
+          </div>
+          <div class="risk-dot-col">
+            <div class="risk-dot nifty"></div>
+            <div class="risk-dot-label">🇮🇳 Nifty 50</div>
+          </div>
+          <div class="risk-dot-col">
+            <div class="risk-dot smallcap"></div>
+            <div class="risk-dot-label">🚀 Small Cap</div>
+          </div>
+        </div>
+      </div>
+
+      <p><strong>Which risk level is right for you?</strong> Ask yourself these three questions:</p>
+      <p>1. <strong>When do I need this money?</strong> — 1–2 years → stay safe. 5+ years → can take more risk.<br/>
+         2. <strong>How would I feel if this dropped 30%?</strong> — Panicky → go safe. Can hold through it → higher risk is okay.<br/>
+         3. <strong>What's my income situation?</strong> — Stable job → can afford more risk. Freelancer/variable income → be conservative.</p>
+
+      <div class="callout green">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body"><strong>Pro tip for first-timers:</strong> Start with <strong>Balanced or Safe Haven</strong>. Simulate on Nivesh. See what the numbers feel like. Then slowly increase your risk as you gain confidence — don't jump into Small Cap on Day 1.</div>
+      </div>
+    </section>
+
+    <!-- ── Section 5: Comparison table ── -->
+    <section class="section reveal" id="comparison">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <h2 class="section-title">Side-by-Side Comparison</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Portfolio</th>
+            <th>Expected Return</th>
+            <th>Risk Level</th>
+            <th>Min. Horizon</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🛡️ Safe Haven</td>
+            <td>~9% / yr</td>
+            <td><span class="tag-pill" style="background:rgba(94,184,255,0.12);color:#5eb8ff">Low</span></td>
+            <td>1+ years</td>
+            <td>First-timers, short goals</td>
+          </tr>
+          <tr>
+            <td>⚖️ Balanced</td>
+            <td>~13% / yr</td>
+            <td><span class="tag-pill" style="background:rgba(245,200,66,0.10);color:#f5c842">Medium</span></td>
+            <td>3+ years</td>
+            <td>Most people, most goals</td>
+          </tr>
+          <tr>
+            <td>🌱 Growth</td>
+            <td>~17% / yr</td>
+            <td><span class="tag-pill" style="background:rgba(255,159,67,0.10);color:#ff9f43">High</span></td>
+            <td>5+ years</td>
+            <td>Wealth building, patient investors</td>
+          </tr>
+          <tr>
+            <td>🇮🇳 Nifty 50</td>
+            <td>~15% / yr</td>
+            <td><span class="tag-pill" style="background:rgba(255,159,67,0.10);color:#ff9f43">High</span></td>
+            <td>7+ years</td>
+            <td>Long-term India believers</td>
+          </tr>
+          <tr>
+            <td>🚀 Small Cap</td>
+            <td>~20% / yr</td>
+            <td><span class="tag-pill" style="background:rgba(192,86,222,0.10);color:#c056de">Very High</span></td>
+            <td>10+ years</td>
+            <td>Aggressive growth seekers</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:1rem">* Returns are historical averages — actual returns vary year to year. The Nivesh simulator runs 1000 scenarios to show you the full range of outcomes.</p>
+    </section>
+
+    <!-- ── Section 6: How to Start ── -->
+    <section class="section reveal" id="how-to-start">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <h2 class="section-title">How to Start (Step by Step)</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-icon">🧠</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-title">Know your goal and timeline</div>
+            <div class="step-desc">Are you saving for a laptop in 1 year? A car in 5 years? Retirement in 30 years? Your timeline determines which portfolio you should pick.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-icon">🎮</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-title">Simulate on Nivesh first</div>
+            <div class="step-desc">Before putting real money in, run simulations on Nivesh. Type in your amount, pick a portfolio, and see what the best-case and worst-case outcomes look like. No real money involved.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-icon">🏦</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-title">Open a Demat + broker account</div>
+            <div class="step-desc">You'll need a Demat account to invest in India. Popular beginner-friendly options: Zerodha, Groww, Upstox. Takes 10–15 minutes online with Aadhaar + PAN.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-icon">💰</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-title">Start small — even ₹500/month</div>
+            <div class="step-desc">You don't need lakhs to start. SIP (Systematic Investment Plan) lets you invest as little as ₹500/month in mutual funds. Small and consistent beats big and irregular.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-icon">🧘</div><div class="step-line"></div></div>
+          <div class="step-body">
+            <div class="step-title">Don't check it every day</div>
+            <div class="step-desc">Seriously. Markets fluctuate daily. Checking your portfolio every day leads to anxiety and bad decisions. Review once a month at most. Let compounding do its job.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section 7: FAQ ── -->
+    <section class="section reveal" id="faq">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+      <div class="section-divider"></div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">What is Monte Carlo simulation and why does Nivesh use it? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Monte Carlo runs thousands of random possible futures for your investment. Some futures are bullish, some are crashes, most are in between. By running 1000 of these, Nivesh can tell you "in 68% of scenarios you'll make money" — which is much more honest than just showing one average line. It's the same method used by pension funds and hedge funds.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Are the returns guaranteed? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Absolutely not — no investment guarantees returns. The percentages shown (9%, 13%, etc.) are long-term historical averages based on Indian market data. In any single year you could earn 40% or lose 30%. The averages only hold reliably over 7–10+ year periods.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">What does "market mood" (Bull/Bear/Neutral) mean? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">A Bull market is when overall prices are rising (optimism). A Bear market is when prices are falling (pessimism). Neutral is normal. In the Nivesh simulator, selecting Bear adds a -6% headwind to returns across the simulation, and Bull adds +6%. It lets you stress-test your portfolio against bad economic conditions.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">I'm a student with ₹2,000/month to spare. Which portfolio? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Start with Balanced. Put ₹2,000/month into a Balanced mutual fund SIP. You're young, so you can take some risk. In 5 years you'll have experience and money to start exploring Growth or Nifty 50. Never jump into Small Cap first — learn the market's rhythms before going aggressive.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">What if the market crashes right after I invest? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">This is called bad timing — and it happens to everyone. The key: don't sell in a panic. Markets have always recovered historically. If you're investing via SIP, a crash is actually good news — you buy more units at a lower price (rupee cost averaging). The worst thing you can do is sell when markets crash and lock in your losses.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Does Nivesh actually invest my money? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">No — Nivesh is a simulator, not a broker. It's a risk-free way to understand what could happen before you put real money anywhere. Think of it as a flight simulator for investing. All the numbers are hypothetical.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-box reveal">
+      <h2>Ready to simulate?</h2>
+      <p>Put in any amount, pick your portfolio, and see a thousand possible futures — all in seconds.</p>
+      <a href="app.html" class="cta-btn">Open Simulator →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Progress bar
+  const fill = document.getElementById('progressFill');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    fill.style.width = pct + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => obs.observe(el));
+
+  // Active sidebar
+  const sections = document.querySelectorAll('section[id], .hero');
+  const links = document.querySelectorAll('.sidebar-link');
+  const sectionObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-link[data-target="${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => sectionObs.observe(s));
+
+  // FAQ toggle
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    item.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "nivesh-frontend",
+  "version": "1.0.0",
+  "description": "Nivesh AI Investing Simulator — Frontend",
+  "scripts": {
+    "start": "serve -l 3000",
+    "start:https": "serve -l 3000 --ssl-cert localhost.pem --ssl-key localhost-key.pem",
+    "install:mkcert-certs": "mkcert localhost"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

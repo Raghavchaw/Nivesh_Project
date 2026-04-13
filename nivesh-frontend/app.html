@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nivesh — Dashboard</title>
+<link rel="icon" type="image/png" href="assets/icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0a0f0d;--surface:#111916;--surface2:#182118;--surface3:#1e2a1e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --green:#3fffa2;--green-dim:rgba(63,255,162,0.1);--green-mid:rgba(63,255,162,0.25);
+  --text:#f0f4f1;--muted:#6a8070;--muted2:#4a6055;
+  --danger:#ff6b6b;--warning:#ffb84d;--blue:#4da8ff;
+  --radius:12px;--nav:64px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(63,255,162,0.04) 0%,transparent 60%);
+  pointer-events:none;}
+
+/* ── NAV ─────────────────────────────────────────────── */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:100;
+  background:rgba(10,15,13,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-brand{display:flex;align-items:center;gap:8px;}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+.nav-name{font-family:'DM Serif Display',serif;font-size:18px;}
+.nav-tabs{display:flex;gap:4px;}
+.nav-tab{padding:7px 16px;font-size:13px;font-weight:500;border:none;background:transparent;
+  color:var(--muted);cursor:pointer;border-radius:8px;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.nav-tab:hover{color:var(--text);background:var(--surface2);}
+.nav-tab.active{color:var(--green);background:var(--green-dim);}
+.nav-user{display:flex;align-items:center;gap:12px;}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:var(--green-dim);
+  border:1px solid var(--green-mid);display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:600;color:var(--green);}
+.logout-btn{padding:6px 14px;font-size:12px;font-weight:500;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);border-radius:8px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.logout-btn:hover{color:var(--danger);border-color:rgba(255,107,107,0.4);}
+
+/* ── LAYOUT ──────────────────────────────────────────── */
+.main{margin-top:var(--nav);padding:2rem;max-width:1100px;margin-left:auto;margin-right:auto;position:relative;z-index:1;}
+.tab-section{display:none;}
+.tab-section.active{display:block;}
+
+/* ── CARDS ───────────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;}
+.card-sm{padding:1.1rem 1.25rem;}
+.card-title{font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:1rem;}
+.section-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:6px;}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:1.5rem;}
+
+/* ── FORMS ───────────────────────────────────────────── */
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px;}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 13px;font-size:14px;font-family:'DM Sans',sans-serif;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:9px;
+  color:var(--text);outline:none;transition:border-color 0.2s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted2);}
+.field select option{background:var(--surface2);}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn{padding:10px 20px;font-size:13px;font-weight:500;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;border:none;}
+.btn-primary{background:var(--green);color:#0a0f0d;}
+.btn-primary:hover{background:#5fffb8;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2);}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(255,107,107,0.3);}
+.btn-danger:hover{background:rgba(255,107,107,0.1);}
+.btn-full{width:100%;padding:12px;}
+
+/* ── AMOUNT INPUT ────────────────────────────────────── */
+.rupee-wrap{display:flex;align-items:center;border:1px solid var(--border2);border-radius:9px;overflow:hidden;background:var(--surface2);}
+.rupee-sym{padding:0 12px;font-size:16px;color:var(--muted);border-right:1px solid var(--border);}
+.rupee-wrap input{border:none;background:transparent;padding:10px 12px;font-size:15px;font-weight:500;color:var(--text);outline:none;width:100%;font-family:'DM Sans',sans-serif;}
+.quick-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.qbtn{font-size:11px;padding:5px 10px;border:1px solid var(--border2);border-radius:20px;
+  background:transparent;color:var(--muted);cursor:pointer;transition:all 0.1s;font-family:'DM Sans',sans-serif;}
+.qbtn:hover{background:var(--green-dim);color:var(--green);border-color:var(--green-mid);}
+
+/* ── PORTFOLIO CARDS ─────────────────────────────────── */
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.25rem;}
+.p-card{border:1px solid var(--border2);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all 0.15s;background:var(--surface);}
+.p-card:hover{border-color:var(--green-mid);}
+.p-card.sel{border-color:var(--green);background:var(--green-dim);}
+.p-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.p-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;margin-bottom:10px;}
+.tag-low{background:rgba(63,255,162,0.12);color:var(--green);}
+.tag-med{background:rgba(255,184,77,0.12);color:var(--warning);}
+.tag-high{background:rgba(255,107,107,0.12);color:var(--danger);}
+.bar-row{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);margin-bottom:3px;}
+.bar-track{flex:1;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;}
+
+/* ── METRICS ─────────────────────────────────────────── */
+.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border2);}
+.metric{padding:14px 16px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+.metric:nth-child(2n){border-right:none;}
+.metric:nth-last-child(-n+2){border-bottom:none;}
+.metric-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;}
+.metric-value{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;}
+.val-g{color:var(--green);}
+.val-r{color:var(--danger);}
+.val-w{color:var(--warning);}
+.val-b{color:var(--blue);}
+
+/* ── PROB BAR ────────────────────────────────────────── */
+.prob-wrap{padding:14px 16px;border:1px solid var(--border2);border-radius:var(--radius);margin-top:10px;}
+.prob-label{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.prob-bar{height:18px;border-radius:10px;overflow:hidden;display:flex;}
+.prob-gain{background:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#0a0f0d;transition:width 0.5s ease;}
+.prob-loss{background:var(--danger);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;transition:width 0.5s ease;}
+.prob-legend{display:flex;gap:14px;margin-top:6px;font-size:11px;color:var(--muted);}
+.prob-legend span{display:flex;align-items:center;gap:5px;}
+.ldot{width:7px;height:7px;border-radius:50%;}
+
+/* ── OUTCOME BARS ────────────────────────────────────── */
+.ob-list{display:flex;flex-direction:column;gap:6px;}
+.ob-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);}
+.ob-label{width:80px;font-size:11px;}
+.ob-track{flex:1;height:16px;background:var(--surface3);border-radius:4px;overflow:hidden;}
+.ob-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:#fff;transition:width 0.5s ease;}
+.ob-pct{width:28px;text-align:right;font-size:11px;}
+
+/* ── SLIDER ROW ──────────────────────────────────────── */
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.slider-row label{font-size:12px;color:var(--muted);width:120px;}
+.slider-row input[type=range]{flex:1;accent-color:var(--green);}
+.slider-val{font-size:12px;font-weight:500;width:50px;text-align:right;}
+
+/* ── HORIZON PILLS ───────────────────────────────────── */
+.horizon-row{display:flex;gap:6px;align-items:center;margin-bottom:1rem;}
+.hbtn{padding:5px 12px;font-size:12px;border:1px solid var(--border2);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.1s;}
+.hbtn.active{background:var(--green-dim);color:var(--green);border-color:var(--green-mid);}
+
+/* ── AI BOX ──────────────────────────────────────────── */
+.ai-box{border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;}
+.ai-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.ai-lbl{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;}
+.ai-body{padding:14px;font-size:14px;color:var(--text);line-height:1.7;min-height:80px;}
+.ai-loading{color:var(--muted);font-style:italic;}
+
+/* ── COMPARE ─────────────────────────────────────────── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;}
+.cmp-select{width:100%;padding:9px 13px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:9px;color:var(--text);outline:none;cursor:pointer;}
+.vs-pill{text-align:center;font-size:11px;color:var(--muted);background:var(--surface2);
+  border:1px solid var(--border);border-radius:20px;padding:3px 10px;align-self:center;justify-self:center;}
+.winner-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;
+  background:var(--green-dim);color:var(--green);border:1px solid var(--green-mid);margin-top:6px;}
+
+/* ── PORTFOLIOS PAGE ─────────────────────────────────── */
+.port-list{display:flex;flex-direction:column;gap:10px;margin-top:1rem;}
+.port-item{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);
+  padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.port-info h3{font-size:15px;font-weight:600;margin-bottom:3px;}
+.port-info p{font-size:12px;color:var(--muted);}
+.port-amount{font-family:'DM Serif Display',serif;font-size:20px;color:var(--green);}
+.port-actions{display:flex;gap:8px;align-items:center;}
+.star-btn{background:none;border:none;cursor:pointer;font-size:16px;opacity:0.5;transition:opacity 0.15s;}
+.star-btn.fav{opacity:1;}
+.empty-state{text-align:center;padding:3rem;color:var(--muted);}
+.empty-state p{font-size:14px;margin-bottom:1rem;}
+
+/* ── TOAST ───────────────────────────────────────────── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;
+  padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;
+  background:var(--surface);border:1px solid var(--border2);color:var(--text);
+  transform:translateY(80px);opacity:0;transition:all 0.3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:var(--green-mid);color:var(--green);}
+.toast.error{border-color:rgba(255,107,107,0.4);color:var(--danger);}
+
+/* ── SPINNER ─────────────────────────────────────────── */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(10,15,13,0.3);border-top-color:#0a0f0d;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:5px;}
+.spin-g{border:2px solid var(--green-mid);border-top-color:var(--green);}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── CHART ───────────────────────────────────────────── */
+.chart-wrap{position:relative;width:100%;height:200px;}
+
+@media(max-width:700px){
+  .p-grid,.cmp-grid,.field-row{grid-template-columns:1fr 1fr;}
+  .metrics-grid{grid-template-columns:1fr 1fr;}
+  .nav-tabs{display:none;}
+  .main{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <img src="assets/icon.png" alt="Nivesh" style="width:32px;height:32px;border-radius:8px;object-fit:cover;" />
+    <span class="nav-name">Nivesh</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goTab('analyze')">Risk analyzer</button>
+    <button class="nav-tab" onclick="goTab('sim')">Simulator</button>
+    <button class="nav-tab" onclick="goTab('compare')">Compare</button>
+    <button class="nav-tab" onclick="goTab('portfolios')">My portfolios</button>
+    <button class="nav-tab" onclick="goTab('explain')">AI explainer</button>
+    <a href="guide.html" class="nav-tab" style="text-decoration:none;">Guide</a>
+  </div>
+  <div class="nav-user">
+    <div class="nav-avatar" id="nav-avatar">?</div>
+    <span style="font-size:13px;color:var(--muted)" id="nav-name"></span>
+    <button class="logout-btn" onclick="doLogout()">Logout</button>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- ═══ ANALYZE TAB ═══════════════════════════════════════════ -->
+<div id="tab-analyze" class="tab-section active">
+  <div class="section-title">Risk analyzer</div>
+  <div class="section-sub">Pick a portfolio · Enter your amount · See the truth</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div>
+      <div class="card card-sm" style="margin-bottom:1rem;">
+        <div class="card-title">How much to invest?</div>
+        <div class="rupee-wrap"><span class="rupee-sym">₹</span><input type="number" id="a-amount" value="10000" oninput="updateAnalyze()"/></div>
+        <div class="quick-row">
+          <button class="qbtn" onclick="setAmt('a-amount',5000);updateAnalyze()">₹5K</button>
+          <button class="qbtn" onclick="setAmt('a-amount',10000);updateAnalyze()">₹10K</button>
+          <button class="qbtn" onclick="setAmt('a-amount',50000);updateAnalyze()">₹50K</button>
+          <button class="qbtn" onclick="setAmt('a-amount',100000);updateAnalyze()">₹1L</button>
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-card sel" id="pc-0" onclick="selPortfolio(0)">
+          <div class="p-name">Safe Haven</div><span class="p-tag tag-low">Low risk</span>
+          <div class="bar-row"><span style="width:36px">Debt</span><div class="bar-track"><div class="bar-fill" style="width:70%;background:var(--green)"></div></div><span>70%</span></div>
+          <div class="bar-row"><span style="width:36px">Equity</span><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--blue)"></div></div><span>30%</span></div>
+        </div>
+        <div class="p-card" id="pc-1" onclick="selPortfolio(1)">
+          <div class="p-name">Balanced</div><span class="p-tag tag-med">Medium</span>
+          <div class="bar-row"><span style="width:36px">Debt</span><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--green)"></div></div><span>50%</span></div>
+          <div class="bar-row"><span style="width:36px">Equity</span><div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--blue)"></div></div><span>50%</span></div>
+        </div>
+        <div class="p-card" id="pc-2" onclick="selPortfolio(2)">
+          <div class="p-name">Growth</div><span class="p-tag tag-high">High risk</span>
+          <div class="bar-row"><span style="width:36px">Debt</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--green)"></div></div><span>20%</span></div>
+          <div class="bar-row"><span style="width:36px">Equity</span><div class="bar-track"><div class="bar-fill" style="width:80%;background:var(--blue)"></div></div><span>80%</span></div>
+        </div>
+        <div class="p-card" id="pc-3" onclick="selPortfolio(3)">
+          <div class="p-name">Nifty 50</div><span class="p-tag tag-med">Medium</span>
+          <div class="bar-row"><span style="width:36px">Equity</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span>100%</span></div>
+        </div>
+        <div class="p-card" id="pc-4" onclick="selPortfolio(4)">
+          <div class="p-name">Smallcap</div><span class="p-tag tag-high">High risk</span>
+          <div class="bar-row"><span style="width:36px">Equity</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card card-sm" style="margin-bottom:10px;">
+        <div class="card-title">If you invest <span id="a-amt-label">₹10,000</span></div>
+        <div class="metrics-grid">
+          <div class="metric"><div class="metric-label">Chance of gain</div><div class="metric-value val-g" id="m-gain">65%</div></div>
+          <div class="metric"><div class="metric-label">Chance of loss</div><div class="metric-value val-r" id="m-loss">35%</div></div>
+          <div class="metric"><div class="metric-label">Worst-case loss</div><div class="metric-value val-w" id="m-worst">-₹1,200</div></div>
+          <div class="metric"><div class="metric-label">Expected return</div><div class="metric-value val-g" id="m-return">+₹1,400</div></div>
+        </div>
+      </div>
+      <div class="prob-wrap">
+        <div class="prob-label">Win vs lose probability</div>
+        <div class="prob-bar">
+          <div class="prob-gain" id="prob-g" style="width:65%">65%</div>
+          <div class="prob-loss" id="prob-l" style="width:35%">35%</div>
+        </div>
+        <div class="prob-legend">
+          <span><span class="ldot" style="background:var(--green)"></span>Gain</span>
+          <span><span class="ldot" style="background:var(--danger)"></span>Loss</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="btn btn-primary" style="width:100%;margin-bottom:8px;" onclick="runAnalyzeAPI()">
+          <span id="analyze-spin" style="display:none" class="spin"></span>Run full simulation
+        </button>
+        <button class="btn btn-ghost" style="width:100%;" onclick="saveToPortfolios()">Save to my portfolios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SIMULATOR TAB ═══════════════════════════════════════════ -->
+<div id="tab-sim" class="tab-section">
+  <div class="section-title">Outcome simulator</div>
+  <div class="section-sub">1000 futures, run in real time via the server</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div class="card card-sm">
+      <div class="card-title">Simulation settings</div>
+      <div class="slider-row"><label>Equity %</label><input type="range" id="s-equity" min="0" max="100" value="50" step="5" oninput="updateSimUI()"/><span class="slider-val" id="s-equity-out">50%</span></div>
+      <div class="slider-row"><label>Market mood</label><input type="range" id="s-mood" min="1" max="3" value="2" step="1" oninput="updateSimUI()"/><span class="slider-val" id="s-mood-out">Neutral</span></div>
+      <div class="slider-row"><label>Years</label><input type="range" id="s-years" min="1" max="10" value="1" step="1" oninput="updateSimUI()"/><span class="slider-val" id="s-years-out">1 yr</span></div>
+      <div style="margin-top:1rem;">
+        <div class="card-title">Amount</div>
+        <div class="rupee-wrap"><span class="rupee-sym">₹</span><input type="number" id="s-amount" value="10000"/></div>
+        <div class="quick-row">
+          <button class="qbtn" onclick="setAmt('s-amount',10000)">₹10K</button>
+          <button class="qbtn" onclick="setAmt('s-amount',50000)">₹50K</button>
+          <button class="qbtn" onclick="setAmt('s-amount',100000)">₹1L</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" style="margin-top:1.2rem;" id="sim-btn" onclick="runSimAPI()">
+        <span id="sim-spin" style="display:none" class="spin"></span>Run simulations
+      </button>
+    </div>
+
+    <div>
+      <div class="card card-sm" style="margin-bottom:10px;">
+        <div class="card-title">1-year outcome distribution</div>
+        <div class="ob-list" id="ob-list">
+          <div class="ob-row"><span class="ob-label">+20%+</span><div class="ob-track"><div class="ob-fill" id="ob5" style="width:12%;background:#27500A">12%</div></div><span class="ob-pct">12%</span></div>
+          <div class="ob-row"><span class="ob-label">+10–20%</span><div class="ob-track"><div class="ob-fill" id="ob4" style="width:22%;background:#3B6D11">22%</div></div><span class="ob-pct">22%</span></div>
+          <div class="ob-row"><span class="ob-label">0–10%</span><div class="ob-track"><div class="ob-fill" id="ob3" style="width:28%;background:var(--green)">28%</div></div><span class="ob-pct">28%</span></div>
+          <div class="ob-row"><span class="ob-label">-10–0%</span><div class="ob-track"><div class="ob-fill" id="ob2" style="width:22%;background:var(--warning)">22%</div></div><span class="ob-pct">22%</span></div>
+          <div class="ob-row"><span class="ob-label">-10–-20%</span><div class="ob-track"><div class="ob-fill" id="ob1" style="width:12%;background:#D85A30">12%</div></div><span class="ob-pct">12%</span></div>
+          <div class="ob-row"><span class="ob-label">&lt;-20%</span><div class="ob-track"><div class="ob-fill" id="ob0" style="width:4%;background:var(--danger)">4%</div></div><span class="ob-pct">4%</span></div>
+        </div>
+      </div>
+      <div class="card card-sm" id="sim-result-card" style="display:none">
+        <div class="card-title">Server result</div>
+        <div style="display:flex;gap:1rem;">
+          <div><div class="metric-label">Gain probability</div><div class="metric-value val-g" id="sr-gain">—</div></div>
+          <div><div class="metric-label">Expected return</div><div class="metric-value val-g" id="sr-ret">—</div></div>
+          <div><div class="metric-label">Worst case</div><div class="metric-value val-r" id="sr-worst">—</div></div>
+        </div>
+      </div>
+      <div class="card card-sm" style="margin-top:10px;border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;" id="sim-tip">
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">Most people fear the red bars. But historically, Indian equity markets gained in 75% of 1-year periods.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPARE TAB ════════════════════════════════════════════ -->
+<div id="tab-compare" class="tab-section">
+  <div class="section-title">Portfolio comparison</div>
+  <div class="section-sub">Pit two strategies against each other</div>
+
+  <div class="card card-sm" style="margin-bottom:1rem;">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:1rem;">
+      <select class="cmp-select" id="cmp-a" onchange="runCompareAPI()">
+        <option value="balanced" selected>Balanced</option>
+        <option value="safe_haven">Safe Haven</option>
+        <option value="growth">Growth</option>
+        <option value="nifty50">Nifty 50 Index</option>
+        <option value="smallcap">Smallcap Fund</option>
+      </select>
+      <div class="vs-pill">vs</div>
+      <select class="cmp-select" id="cmp-b" onchange="runCompareAPI()">
+        <option value="growth" selected>Growth</option>
+        <option value="safe_haven">Safe Haven</option>
+        <option value="balanced">Balanced</option>
+        <option value="nifty50">Nifty 50 Index</option>
+        <option value="smallcap">Smallcap Fund</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <div class="field" style="margin-bottom:0"><label>Amount</label>
+          <div class="rupee-wrap" style="width:160px"><span class="rupee-sym">₹</span><input type="number" id="cmp-amt" value="10000" oninput="runCompareAPI()"/></div>
+        </div>
+      </div>
+      <div>
+        <div class="field" style="margin-bottom:0"><label>Time horizon</label>
+          <div class="horizon-row" style="margin-bottom:0">
+            <button class="hbtn" onclick="setCmpHorizon(1,this)">1yr</button>
+            <button class="hbtn active" onclick="setCmpHorizon(3,this)">3yr</button>
+            <button class="hbtn" onclick="setCmpHorizon(5,this)">5yr</button>
+            <button class="hbtn" onclick="setCmpHorizon(10,this)">10yr</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-left:auto;font-size:12px;color:var(--muted);" id="cmp-loading"></div>
+    </div>
+  </div>
+
+  <div class="cmp-grid" id="cmp-cards">
+    <div class="card card-sm" id="cmp-card-a"><div style="color:var(--muted);font-size:13px">Loading...</div></div>
+    <div class="card card-sm" id="cmp-card-b"><div style="color:var(--muted);font-size:13px">Loading...</div></div>
+  </div>
+
+  <div class="card card-sm">
+    <div class="card-title">Growth over time</div>
+    <div style="display:flex;gap:14px;margin-bottom:10px;font-size:12px;color:var(--muted);">
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:var(--green);border-radius:1px;display:inline-block"></span><span id="leg-a">Portfolio A</span></span>
+      <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:3px;background:var(--warning);border-radius:1px;display:inline-block;border-bottom:2px dashed var(--warning);height:0"></span><span id="leg-b">Portfolio B</span></span>
+    </div>
+    <div class="chart-wrap"><canvas id="cmpChart" role="img" aria-label="Portfolio growth comparison chart">Comparison of two portfolio growth trajectories.</canvas></div>
+  </div>
+</div>
+
+<!-- ═══ PORTFOLIOS TAB ══════════════════════════════════════════ -->
+<div id="tab-portfolios" class="tab-section">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+    <div>
+      <div class="section-title">My portfolios</div>
+      <div class="section-sub">Saved strategies from your simulations</div>
+    </div>
+    <button class="btn btn-primary" onclick="openNewPortfolio()">+ New portfolio</button>
+  </div>
+
+  <!-- New portfolio form -->
+  <div id="new-port-form" class="card" style="display:none;margin-bottom:1.5rem;">
+    <div class="card-title">New portfolio</div>
+    <div class="field-row">
+      <div class="field"><label>Portfolio name</label><input type="text" id="np-name" placeholder="e.g. My SIP plan"/></div>
+      <div class="field"><label>Invested amount (₹)</label><input type="number" id="np-amount" placeholder="10000"/></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Equity allocation %</label><input type="number" id="np-equity" min="0" max="100" placeholder="50"/></div>
+      <div class="field"><label>Portfolio type</label>
+        <select id="np-type">
+          <option value="custom">Custom</option>
+          <option value="safe_haven">Safe Haven</option>
+          <option value="balanced">Balanced</option>
+          <option value="growth">Growth</option>
+          <option value="nifty50">Nifty 50</option>
+          <option value="smallcap">Smallcap</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Notes (optional)</label><textarea id="np-notes" rows="2" placeholder="Why am I investing in this?"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:0.5rem;">
+      <button class="btn btn-primary" id="create-port-btn" onclick="createPortfolio()">Create portfolio</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('new-port-form').style.display='none'">Cancel</button>
+    </div>
+  </div>
+
+  <div id="port-list" class="port-list"><div class="empty-state"><p>No portfolios yet. Create one!</p></div></div>
+</div>
+
+<!-- ═══ AI EXPLAINER TAB ══════════════════════════════════════ -->
+<div id="tab-explain" class="tab-section">
+  <div class="section-title">AI explainer</div>
+  <div class="section-sub">Plain language explanation powered by Claude</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+    <div class="card card-sm">
+      <div class="card-title">Portfolio details</div>
+      <div class="field"><label>Portfolio</label>
+        <select id="ex-type">
+          <option value="safe_haven">Safe Haven (Low risk)</option>
+          <option value="balanced" selected>Balanced (Medium)</option>
+          <option value="growth">Growth (High risk)</option>
+          <option value="nifty50">Nifty 50 Index</option>
+          <option value="smallcap">Smallcap Fund</option>
+        </select>
+      </div>
+      <div class="field"><label>Amount (₹)</label>
+        <div class="rupee-wrap"><span class="rupee-sym">₹</span><input type="number" id="ex-amount" value="10000"/></div>
+      </div>
+      <div class="field"><label>Time period</label>
+        <select id="ex-years"><option value="1">1 year</option><option value="3" selected>3 years</option><option value="5">5 years</option><option value="10">10 years</option></select>
+      </div>
+      <button class="btn btn-primary btn-full" id="explain-btn" onclick="runExplain()">
+        <span id="explain-spin" style="display:none" class="spin"></span>Explain this portfolio
+      </button>
+      <div style="margin-top:10px;">
+        <button class="btn btn-ghost btn-full" id="tip-btn" onclick="runBehavioralTip()">
+          <span id="tip-spin" style="display:none" class="spin spin-g"></span>Get behavioral insight
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="ai-box">
+        <div class="ai-hdr"><div class="ai-dot"></div><span class="ai-lbl">Portfolio explanation</span></div>
+        <div class="ai-body" id="ex-body"><span class="ai-loading">Select a portfolio and click "Explain" to get a plain-language breakdown.</span></div>
+      </div>
+      <div class="ai-box">
+        <div class="ai-hdr"><div class="ai-dot" style="background:var(--blue)"></div><span class="ai-lbl">Behavioral insight</span></div>
+        <div class="ai-body" id="tip-body"><span class="ai-loading">Click "Get behavioral insight" to understand your psychological biases.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ─── Config ──────────────────────────────────────────────────────
+const API = 'http://localhost:5000/api';
+let accessToken = localStorage.getItem('accessToken');
+let user = JSON.parse(localStorage.getItem('user') || '{}');
+
+// ─── Auth guard ───────────────────────────────────────────────────
+if (!accessToken) window.location.href = 'login.html';
+
+// ─── Init nav ─────────────────────────────────────────────────────
+document.getElementById('nav-avatar').textContent = (user.name||'?')[0].toUpperCase();
+document.getElementById('nav-name').textContent = user.name || '';
+
+// ─── API helper ───────────────────────────────────────────────────
+async function api(path, opts={}) {
+  const res = await fetch(`${API}${path}`, {
+    ...opts,
+    headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${accessToken}`, ...(opts.headers||{}) },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if (res.status === 401) { doLogout(); return null; }
+  return res.json();
+}
+
+// ─── Toast ────────────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── Nav tabs ─────────────────────────────────────────────────────
+function goTab(name) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b => {
+    if (b.textContent.toLowerCase().includes(name.replace('_',''))) b.classList.add('active');
+  });
+  if (name==='portfolios') loadPortfolios();
+}
+
+// ─── Logout ───────────────────────────────────────────────────────
+async function doLogout() {
+  try { await api('/auth/logout', { method:'POST' }); } catch{}
+  localStorage.clear(); window.location.href='login.html';
+}
+
+// ─── Utilities ────────────────────────────────────────────────────
+function setAmt(id, v) { document.getElementById(id).value = v; }
+function fmtINR(n) { return '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN'); }
+function setLoading(spinId, btnId, on, label) {
+  document.getElementById(spinId).style.display = on ? 'inline-block' : 'none';
+  document.getElementById(btnId).disabled = on;
+}
+
+// ─── ANALYZE TAB ─────────────────────────────────────────────────
+const PRESETS = [
+  {name:'Safe Haven', gainP:72, lossP:28, worstPct:-0.08, retPct:0.09, eq:30, type:'safe_haven'},
+  {name:'Balanced',   gainP:65, lossP:35, worstPct:-0.12, retPct:0.14, eq:50, type:'balanced'},
+  {name:'Growth',     gainP:58, lossP:42, worstPct:-0.22, retPct:0.21, eq:80, type:'growth'},
+  {name:'Nifty 50',   gainP:63, lossP:37, worstPct:-0.20, retPct:0.16, eq:100, type:'nifty50'},
+  {name:'Smallcap',   gainP:54, lossP:46, worstPct:-0.35, retPct:0.24, eq:100, type:'smallcap'},
+];
+let selIdx = 0;
+
+function selPortfolio(i) {
+  selIdx = i;
+  document.querySelectorAll('.p-card').forEach((c,j) => c.classList.toggle('sel', j===i));
+  updateAnalyze();
+}
+function updateAnalyze() {
+  const p = PRESETS[selIdx];
+  const amt = parseFloat(document.getElementById('a-amount').value)||10000;
+  document.getElementById('a-amt-label').textContent = '₹'+amt.toLocaleString('en-IN');
+  document.getElementById('m-gain').textContent = p.gainP+'%';
+  document.getElementById('m-loss').textContent = p.lossP+'%';
+  document.getElementById('m-worst').textContent = '-'+fmtINR(amt*Math.abs(p.worstPct));
+  document.getElementById('m-return').textContent = '+'+fmtINR(amt*p.retPct);
+  document.getElementById('prob-g').style.width = p.gainP+'%';
+  document.getElementById('prob-g').textContent = p.gainP+'%';
+  document.getElementById('prob-l').style.width = p.lossP+'%';
+  document.getElementById('prob-l').textContent = p.lossP+'%';
+}
+
+async function runAnalyzeAPI() {
+  const p = PRESETS[selIdx];
+  const amt = parseFloat(document.getElementById('a-amount').value)||10000;
+  setLoading('analyze-spin','analyze-spin',true);
+  document.querySelector('[onclick="runAnalyzeAPI()"]').disabled=true;
+  try {
+    const data = await api('/simulate', {method:'POST', body:{portfolioType:p.type, amount:amt, years:1, marketMood:'neutral'}});
+    if (!data?.success) throw new Error('Simulation failed');
+    const r = data.result;
+    document.getElementById('m-gain').textContent = r.gainProbability+'%';
+    document.getElementById('m-loss').textContent = r.lossProbability+'%';
+    document.getElementById('m-worst').textContent = '-'+fmtINR(Math.abs(r.worstCaseLoss));
+    document.getElementById('m-return').textContent = '+'+fmtINR(r.expectedReturn);
+    document.getElementById('prob-g').style.width = r.gainProbability+'%';
+    document.getElementById('prob-g').textContent = r.gainProbability+'%';
+    document.getElementById('prob-l').style.width = r.lossProbability+'%';
+    document.getElementById('prob-l').textContent = r.lossProbability+'%';
+    toast('Simulation complete from server!');
+  } catch(e) { toast('Server simulation failed. Using local estimates.','error'); }
+  finally { setLoading('analyze-spin','analyze-spin',false); document.querySelector('[onclick="runAnalyzeAPI()"]').disabled=false; }
+}
+
+async function saveToPortfolios() {
+  const p = PRESETS[selIdx];
+  const amt = parseFloat(document.getElementById('a-amount').value)||10000;
+  try {
+    const data = await api('/portfolios', {method:'POST', body:{
+      name: p.name+' Portfolio', type: p.type, investedAmount: amt,
+      allocation:{equity:p.eq, debt:100-p.eq},
+      riskLevel: p.eq>=70?'high':p.eq>=40?'medium':'low',
+      annualMeanReturn: p.retPct, annualStdDev: 0.1,
+    }});
+    if (data?.success) toast('Saved to My Portfolios!');
+    else toast('Could not save. Please try again.','error');
+  } catch { toast('Error saving portfolio.','error'); }
+}
+
+// ─── SIMULATOR TAB ────────────────────────────────────────────────
+function updateSimUI() {
+  const eq = document.getElementById('s-equity').value;
+  const mood = ['','Bear','Neutral','Bull'][document.getElementById('s-mood').value];
+  const years = document.getElementById('s-years').value;
+  document.getElementById('s-equity-out').textContent = eq+'%';
+  document.getElementById('s-mood-out').textContent = mood;
+  document.getElementById('s-years-out').textContent = years+' yr'+(years>1?'s':'');
+}
+
+async function runSimAPI() {
+  const eq = parseInt(document.getElementById('s-equity').value);
+  const moodIdx = parseInt(document.getElementById('s-mood').value);
+  const mood = ['','bear','neutral','bull'][moodIdx];
+  const years = parseInt(document.getElementById('s-years').value);
+  const amt = parseFloat(document.getElementById('s-amount').value)||10000;
+  const meanRet = 0.065 + (eq/100) * 0.12;
+  const std = 0.03 + (eq/100) * 0.18;
+
+  setLoading('sim-spin','sim-btn',true);
+  try {
+    const data = await api('/simulate', {method:'POST', body:{
+      equityPct:eq, annualMeanReturn:meanRet, annualStdDev:std,
+      amount:amt, years, marketMood:mood, simCount:1000
+    }});
+    if (!data?.success) throw new Error('Failed');
+    const r = data.result;
+    const colors=['#ff4444','#D85A30','#ffb84d','#3fffa2','#27A06B','#1a6b44'];
+    const ids=['ob0','ob1','ob2','ob3','ob4','ob5'];
+    r.buckets.forEach((pct,i) => {
+      const el=document.getElementById(ids[i]);
+      el.style.width=Math.max(pct,2)+'%'; el.style.background=colors[i]; el.textContent=pct+'%';
+      el.parentElement.nextElementSibling.textContent=pct+'%';
+    });
+    const lossTotal = r.buckets[0]+r.buckets[1]+r.buckets[2];
+    document.getElementById('sr-gain').textContent=r.gainProbability+'%';
+    document.getElementById('sr-ret').textContent='+'+fmtINR(r.expectedReturn);
+    document.getElementById('sr-worst').textContent='-'+fmtINR(Math.abs(r.worstCaseLoss));
+    document.getElementById('sim-result-card').style.display='block';
+    document.getElementById('sim-tip').querySelector('div').textContent =
+      `In a ${['','bear','neutral','bull'][moodIdx]} market with ${eq}% equity — ${r.gainProbability}% chance of gain, ${r.lossProbability}% chance of loss over ${years} year(s).`;
+    toast('Server simulation complete!');
+  } catch(e) { toast('Simulation failed. Check backend.','error'); }
+  finally { setLoading('sim-spin','sim-btn',false); }
+}
+
+// ─── COMPARE TAB ──────────────────────────────────────────────────
+let cmpHorizon=3, cmpChart=null, cmpDebounce=null;
+function setCmpHorizon(h,btn) {
+  cmpHorizon=h;
+  document.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  runCompareAPI();
+}
+
+function buildCmpCard(id, type, result, amount, years, isWinner) {
+  const gain = result.finalMeanValue - amount;
+  const totalRet = Math.round((gain/amount)*100);
+  const names={safe_haven:'Safe Haven',balanced:'Balanced',growth:'Growth',nifty50:'Nifty 50',smallcap:'Smallcap'};
+  const tagCls={safe_haven:'tag-low',balanced:'tag-med',growth:'tag-high',nifty50:'tag-med',smallcap:'tag-high'};
+  const tagLbl={safe_haven:'Low risk',balanced:'Medium',growth:'High risk',nifty50:'Medium',smallcap:'High risk'};
+  document.getElementById(id).innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="p-name" style="font-size:15px">${names[type]||type}</div>
+      <span class="p-tag ${tagCls[type]||'tag-med'}">${tagLbl[type]||''}</span>
+    </div>
+    ${isWinner?'<div class="winner-badge">Better returns</div>':''}
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;font-size:13px;">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">After ${years}yr${years>1?'s':''}</span><span style="font-weight:600;color:${gain>=0?'var(--green)':'var(--danger)'}">₹${Math.round(result.finalMeanValue).toLocaleString('en-IN')}</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Total return</span><span style="color:${totalRet>=0?'var(--green)':'var(--danger)'};">${totalRet>=0?'+':''}${totalRet}%</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Gain chance</span><span style="color:var(--green)">${result.gainProbability}%</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Worst case</span><span style="color:var(--warning)">₹${Math.round(result.finalMeanValue+result.worstCaseLoss).toLocaleString('en-IN')}</span></div>
+    </div>`;
+}
+
+function buildCmpChart(rA, rB, nameA, nameB, amount, years) {
+  const labels=[], dA=[], dB=[];
+  for(let i=0;i<=years*4;i++){
+    const t=(i/(years*4))*years;
+    labels.push(t===0?'Now':(Number.isInteger(t)?'Yr '+t:''));
+    const mA=((rA.finalMeanValue/amount)**(1/years))-1;
+    const mB=((rB.finalMeanValue/amount)**(1/years))-1;
+    dA.push(Math.round(amount*Math.pow(1+mA,t)));
+    dB.push(Math.round(amount*Math.pow(1+mB,t)));
+  }
+  if(cmpChart) cmpChart.destroy();
+  cmpChart=new Chart(document.getElementById('cmpChart'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:nameA,data:dA,borderColor:'#3fffa2',backgroundColor:'transparent',borderWidth:2,pointRadius:0,tension:0.3},
+      {label:nameB,data:dB,borderColor:'#ffb84d',backgroundColor:'transparent',borderWidth:2,pointRadius:0,tension:0.3,borderDash:[5,3]},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6a8070',font:{size:11},maxTicksLimit:years*4+1}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6a8070',font:{size:11},callback:v=>'₹'+(v>=100000?Math.round(v/1000)+'K':v.toLocaleString('en-IN'))}}
+      }
+    }
+  });
+}
+
+async function runCompareAPI() {
+  clearTimeout(cmpDebounce);
+  cmpDebounce=setTimeout(async()=>{
+    const pA=document.getElementById('cmp-a').value;
+    const pB=document.getElementById('cmp-b').value;
+    const amt=parseFloat(document.getElementById('cmp-amt').value)||10000;
+    document.getElementById('cmp-loading').textContent='Running...';
+    try {
+      const data=await api('/simulate/compare',{method:'POST',body:{portfolioA:pA,portfolioB:pB,amount:amt,years:cmpHorizon,marketMood:'neutral'}});
+      if(!data?.success) throw new Error('Compare failed');
+      const names={safe_haven:'Safe Haven',balanced:'Balanced',growth:'Growth',nifty50:'Nifty 50',smallcap:'Smallcap'};
+      const winA=data.winner===pA;
+      buildCmpCard('cmp-card-a',pA,data.portfolioA.result,amt,cmpHorizon,winA);
+      buildCmpCard('cmp-card-b',pB,data.portfolioB.result,amt,cmpHorizon,!winA);
+      buildCmpChart(data.portfolioA.result,data.portfolioB.result,names[pA]||pA,names[pB]||pB,amt,cmpHorizon);
+      document.getElementById('leg-a').textContent=names[pA]||pA;
+      document.getElementById('leg-b').textContent=names[pB]||pB;
+    } catch { document.getElementById('cmp-card-a').innerHTML='<div style="color:var(--danger);font-size:13px">Server error. Check backend.</div>'; }
+    document.getElementById('cmp-loading').textContent='';
+  },400);
+}
+
+// ─── PORTFOLIOS TAB ───────────────────────────────────────────────
+function openNewPortfolio() {
+  const f=document.getElementById('new-port-form');
+  f.style.display=f.style.display==='none'?'block':'none';
+}
+
+async function loadPortfolios() {
+  const data=await api('/portfolios');
+  const list=document.getElementById('port-list');
+  if(!data?.success||!data.portfolios.length){
+    list.innerHTML='<div class="empty-state"><p>No portfolios yet.</p><button class="btn btn-primary" onclick="openNewPortfolio()">Create your first portfolio</button></div>';
+    return;
+  }
+  const tagCls={low:'tag-low',medium:'tag-med',high:'tag-high'};
+  list.innerHTML=data.portfolios.map(p=>`
+    <div class="port-item" id="pi-${p._id}">
+      <div class="port-info">
+        <h3>${p.name}</h3>
+        <p>${p.allocation.equity}% equity · ${p.allocation.debt}% debt · <span class="p-tag ${tagCls[p.riskLevel]||'tag-med'}" style="vertical-align:middle">${p.riskLevel} risk</span></p>
+        ${p.notes?`<p style="font-size:11px;color:var(--muted2);margin-top:3px">${p.notes}</p>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="port-amount">${fmtINR(p.investedAmount)}</div>
+        <div class="port-actions">
+          <button class="star-btn ${p.isFavorite?'fav':''}" onclick="toggleFav('${p._id}',${p.isFavorite})">${p.isFavorite?'★':'☆'}</button>
+          <button class="btn btn-danger" style="padding:5px 10px;font-size:11px" onclick="deletePortfolio('${p._id}')">Delete</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function createPortfolio() {
+  const name=document.getElementById('np-name').value.trim();
+  const amount=parseFloat(document.getElementById('np-amount').value);
+  const equity=parseFloat(document.getElementById('np-equity').value)||50;
+  const type=document.getElementById('np-type').value;
+  const notes=document.getElementById('np-notes').value;
+  if(!name||!amount) return toast('Name and amount are required.','error');
+  document.getElementById('create-port-btn').disabled=true;
+  try {
+    const data=await api('/portfolios',{method:'POST',body:{name,type,investedAmount:amount,allocation:{equity,debt:100-equity},notes}});
+    if(data?.success){
+      toast('Portfolio created!');
+      document.getElementById('new-port-form').style.display='none';
+      document.getElementById('np-name').value='';
+      document.getElementById('np-amount').value='';
+      loadPortfolios();
+    } else toast(data?.message||'Failed to create portfolio.','error');
+  } catch { toast('Error creating portfolio.','error'); }
+  finally { document.getElementById('create-port-btn').disabled=false; }
+}
+
+async function toggleFav(id, isFav) {
+  const data=await api(`/portfolios/${id}`,{method:'PATCH',body:{isFavorite:!isFav}});
+  if(data?.success) { toast(!isFav?'Added to favorites':'Removed from favorites'); loadPortfolios(); }
+}
+
+async function deletePortfolio(id) {
+  if(!confirm('Delete this portfolio?')) return;
+  const data=await api(`/portfolios/${id}`,{method:'DELETE'});
+  if(data?.success) { toast('Portfolio deleted.'); loadPortfolios(); }
+  else toast('Could not delete.','error');
+}
+
+// ─── AI EXPLAINER TAB ─────────────────────────────────────────────
+const EX_PRESETS={
+  safe_haven:{riskLevel:'low',equityPct:30,debtPct:70,gainP:72,lossP:28,worst:-800,ret:900},
+  balanced:{riskLevel:'medium',equityPct:50,debtPct:50,gainP:65,lossP:35,worst:-1200,ret:1400},
+  growth:{riskLevel:'high',equityPct:80,debtPct:20,gainP:58,lossP:42,worst:-2200,ret:2100},
+  nifty50:{riskLevel:'medium',equityPct:100,debtPct:0,gainP:63,lossP:37,worst:-2000,ret:1600},
+  smallcap:{riskLevel:'high',equityPct:100,debtPct:0,gainP:54,lossP:46,worst:-3500,ret:2400},
+};
+const EX_NAMES={safe_haven:'Safe Haven',balanced:'Balanced',growth:'Growth',nifty50:'Nifty 50 Index',smallcap:'Smallcap Fund'};
+
+async function runExplain() {
+  const type=document.getElementById('ex-type').value;
+  const amount=parseFloat(document.getElementById('ex-amount').value)||10000;
+  const years=parseInt(document.getElementById('ex-years').value)||1;
+  const p=EX_PRESETS[type];
+  setLoading('explain-spin','explain-btn',true);
+  document.getElementById('ex-body').innerHTML='<span class="ai-loading">Claude is thinking...</span>';
+  try {
+    const scale=amount/10000;
+    const data=await api('/ai/explain',{method:'POST',body:{
+      portfolioName:EX_NAMES[type],riskLevel:p.riskLevel,
+      equityPct:p.equityPct,debtPct:p.debtPct,amount,
+      gainProbability:p.gainP,lossProbability:p.lossP,
+      worstCaseLoss:Math.round(p.worst*scale),
+      expectedReturn:Math.round(p.ret*scale),years
+    }});
+    if(data?.success) document.getElementById('ex-body').textContent=data.explanation;
+    else throw new Error('API error');
+  } catch {
+    document.getElementById('ex-body').textContent=`So, the ${EX_NAMES[type]} portfolio is like putting your money into a mix that's ${EX_PRESETS[type].equityPct}% in the stock market. Think of it as choosing how much tadka (spice) to add to your investment dal — more equity, more flavor but also more chances of it burning. Your ₹${amount.toLocaleString('en-IN')} has a ${EX_PRESETS[type].gainP}% chance of growing. One thing to keep in mind: past performance doesn't guarantee future results.`;
+  }
+  finally { setLoading('explain-spin','explain-btn',false); document.getElementById('explain-btn').disabled=false; }
+}
+
+async function runBehavioralTip() {
+  const type=document.getElementById('ex-type').value;
+  const p=EX_PRESETS[type];
+  setLoading('tip-spin','tip-btn',true);
+  document.getElementById('tip-body').innerHTML='<span class="ai-loading">Analyzing your behavior patterns...</span>';
+  try {
+    const data=await api('/ai/behavioral-tip',{method:'POST',body:{
+      gainProbability:p.gainP,lossProbability:p.lossP,equityPct:p.equityPct,marketMood:'neutral',years:1
+    }});
+    if(data?.success) document.getElementById('tip-body').textContent=data.tip;
+    else throw new Error('error');
+  } catch {
+    document.getElementById('tip-body').textContent=`Your brain is wired for loss aversion — a ₹1,000 loss feels twice as painful as a ₹1,000 gain feels good. This is why ${p.lossP}% loss probability feels scarier than ${p.gainP}% gain probability feels exciting. Tip: focus on time in market, not timing the market.`;
+  }
+  finally { setLoading('tip-spin','tip-btn',false); document.getElementById('tip-btn').disabled=false; }
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────
+updateAnalyze();
+updateSimUI();
+runCompareAPI();
+</script>
+</body>
+</html>  
