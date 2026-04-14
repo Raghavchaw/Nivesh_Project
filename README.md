@@ -1,6 +1,5 @@
 # 🌱 Nivesh — AI-Powered Investment Simulator
 
-## 📌 Project Overview
 
 **Nivesh** (Hindi for *Investment*) is an AI-powered personal finance and investment simulator built to help everyday Indians make smarter, more confident investment decisions — without needing a financial advisor.
 
