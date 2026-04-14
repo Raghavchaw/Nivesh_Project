@@ -120,11 +120,8 @@ CLIENT_URL=http://localhost:3000
 ```
 
 ```bash
-# (Optional) Seed the database with test users
-npm run seed
-
 # Start the backend server
-npm run dev
+node server.js
 ```
 
 The API will be live at **http://localhost:5000**
@@ -142,7 +139,7 @@ cd ../frontend
 python3 -m http.server 3000
 
 # Option B — Node.js
-npx serve . -p 3000
+npx serve 
 
 # Option C — VS Code
 # Install "Live Server" extension → right-click index.html → Open with Live Server
